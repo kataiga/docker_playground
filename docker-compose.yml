@@ -2,15 +2,39 @@ version: '3.7'
 services:
   poll:
     build: ./poll
+    restart: always
     ports:
       - '5000:80'
     command: flask run --host=0.0.0.0 --port=80
   result:
     build: ./result
+    restart: always
     ports:
       - '5001:80'
+    depends_on:
+      - db
 # to do :
 # use environments vars and replace hard coded vars in worker.java
   worker:
     build: ./worker
+    restart: always
     command: java -jar /worker/worker.jar
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379'
+  db:
+    image: postgres:13.2
+    restart: always
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'pass'
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+volumes:
+  db-data:
