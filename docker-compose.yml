@@ -5,3 +5,7 @@ services:
     ports:
       - '5000:80'
     command: flask run --host=0.0.0.0 --port=80
+  result:
+    build: ./result
+  # worker:
+  #   build: ./worker
