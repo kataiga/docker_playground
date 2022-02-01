@@ -7,5 +7,10 @@ services:
     command: flask run --host=0.0.0.0 --port=80
   result:
     build: ./result
-  # worker:
-  #   build: ./worker
+    ports:
+      - '5001:80'
+# to do :
+# use environments vars and replace hard coded vars in worker.java
+  worker:
+    build: ./worker
+    command: java -jar /worker/worker.jar
